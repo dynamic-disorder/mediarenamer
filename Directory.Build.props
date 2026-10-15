@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <!-- Allow building Windows-targeted projects (WPF / net*-windows) on Linux/macOS hosts.
+         A no-op where the SDK already runs on Windows. Without it the build fails with NETSDK1100,
+         because every project here targets net10.0-windows. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+</Project>
