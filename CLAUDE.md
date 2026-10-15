@@ -14,8 +14,8 @@ Services, and WpfApp.
 
 ## Commands
 
-- **Build**: `dotnet build MediaRenamer.sln` (from `MediaRenamer/`)
-- **Run**: `dotnet run --project WpfApp` (from `MediaRenamer/`) — Windows only
+- **Build**: `dotnet build MediaRenamer.sln` (from the repository root)
+- **Run**: `dotnet run --project WpfApp` (from the repository root) — Windows only
 - **Test**: no test project yet — see TODOS.md
 
 ## Conventions
