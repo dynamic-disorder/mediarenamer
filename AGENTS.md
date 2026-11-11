@@ -8,7 +8,7 @@
 | **DoD** | A session can build on either platform, predict which timestamp a file will be renamed from, and know why a dry run is the only safe first move. |
 | **Top risk** | Renaming a folder of originals without a dry run, or trusting the EXIF path for a format it does not cover, so the files end up named from a copy time. |
 
-Loaded automatically by DSH as workspace instructions for anything under `mediarenamer/`.
+Loaded automatically as workspace instructions for anything under `mediarenamer/`.
 
 ## What this repository is
 
@@ -60,14 +60,11 @@ Video metadata is not implemented. `TODOS.md` and `README.md` describe a `Compos
 
 | Path | Read by | Holds |
 | :--- | :--- | :--- |
-| `AGENTS.md` | DSH and any agent | This file |
-| `.clinerules` | Cline | Platform, build and commit rules |
-| `.github/copilot-instructions.md` | GitHub Copilot | Suggestion-level guidance |
-| `.agents/skills/` | Every harness | Seven tracked skills |
-| `.agents/hooks/`, `.agents/settings.json` | Git and Claude Code-format harnesses | The commit gate |
-| `.claudeignore` | Claude Code | Files to keep out of context |
+| `AGENTS.md` | Any agent | This file |
+| `.agents/skills/` | Any agent | Seven tracked skills |
+| `.agents/hooks/` | Git hooks | The commit gate |
 
-The commit gate is the same one the sibling repositories use: `core.hooksPath` is `.githooks`, the wrapper execs `.agents/hooks/pre-commit-build-check.sh`, and the script is also the harness `PreToolUse` hook. It builds the solution when staged `.cs`/`.csproj`/`.props`/`.targets` files exist, retries once, and exits 2 to block the commit. Both scripts must keep their `100755` index mode; `100644` makes a Linux clone skip the gate silently.
+The commit gate is the same one the sibling repositories use: `core.hooksPath` is `.githooks`, the wrapper execs `.agents/hooks/pre-commit-build-check.sh`. It builds the solution when staged `.cs`/`.csproj`/`.props`/`.targets` files exist, retries once, and exits 2 to block the commit. Both scripts must keep their `100755` index mode; `100644` makes a Linux clone skip the gate silently.
 
 ## Verification
 
@@ -93,10 +90,9 @@ On Linux only the build is provable; the window needs Windows. State which platf
 | `README.md` describes `[Inject]` and `CompositeMetadataProvider` | Neither exists; the tree is plain constructor injection | Treat it as a design sketch |
 | The tool "preserves creation time" | It names files from EXIF where available and falls back to filesystem time; `File.Move` preserves the file's timestamps but the tool does not set them | Describe what the code does |
 | `TODOS.md` lists tests, video support, batch processing | All still absent — do not assume any of them exists | Read the code |
-| A `.claude/` directory is expected | Merged into `.agents/` and deleted; `.claudeignore` remains | Do not recreate `.claude/` |
 
 ## Where work is recorded
 
 Planned features live in `TODOS.md` and are the owner's list; adding to it is fine, silently implementing from it is not. Investigation output goes to `local_user_files/`, which is git-ignored except for its README.
 
-Documentation: this file replaces `CLAUDE.md` as the agent entry point. `.clinerules`, `.gitignore`, `.githooks/pre-commit` and `.agents/settings.json` were repointed from `.claude/` to `.agents/`, and the build gate's executable bit was restored.
+Documentation: this file is the agent entry point. The per-tool files (`.clinerules`, `.claudeignore`, `.github/copilot-instructions.md`, `.agents/settings.json`) were removed on 2026-11-11 so nothing duplicates it.
