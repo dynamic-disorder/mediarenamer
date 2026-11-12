@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Need** | A session with no memory of this repository: three projects, a Windows-only runtime that still cross-compiles on Linux, the metadata fallback chain, and the README that describes a directory layout the tree does not have. |
 | **Why** | Every change here touches real media files. A wrong timestamp or a rename applied on the wrong pass is unrecoverable, and a build-flag mistake turns a working Linux build into `NETSDK1100`. |
-| **What** | Project map, build and run split by platform, the metadata fallback chain, the rename plan's collision rule, `.agents/` configuration, and the drift already found. Deliberately not repeated: `TODOS.md`, which owns planned features. |
+| **What** | Project map, build and run split by platform, the metadata fallback chain, the rename plan's collision rule, the machine-level agent configuration it relies on, and the drift already found. Deliberately not repeated: `TODOS.md`, which owns planned features. |
 | **DoD** | A session can build on either platform, predict which timestamp a file will be renamed from, and know why a dry run is the only safe first move. |
 | **Top risk** | Renaming a folder of originals without a dry run, or trusting the EXIF path for a format it does not cover, so the files end up named from a copy time. |
 
@@ -58,19 +58,20 @@ Video metadata is not implemented. `TODOS.md` and `README.md` describe a `Compos
 
 ## Agent surfaces
 
-| Path | Read by | Holds |
-| :--- | :--- | :--- |
-| `AGENTS.md` | Any agent | This file |
-| `.agents/skills/` | Any agent | Seven tracked skills |
-| `.agents/hooks/` | Git hooks | The commit gate |
+`AGENTS.md` is the only agent configuration file in this repository. The skills, the hooks and the
+shared rules are installed machine-wide from the prototype-k checkout (`~/.agents/skills/<name>`,
+`~/.agents/hooks`, `~/.agents/githooks`), so there is no `.agents/` directory here to keep in step.
 
-The commit gate is the same one the sibling repositories use: `core.hooksPath` is `.githooks`, the wrapper execs `.agents/hooks/pre-commit-build-check.sh`. It builds the solution when staged `.cs`/`.csproj`/`.props`/`.targets` files exist, retries once, and exits 2 to block the commit. Both scripts must keep their `100755` index mode; `100644` makes a Linux clone skip the gate silently.
+The commit gate is the same one the sibling repositories run: `core.hooksPath` is set globally to
+`~/.agents/githooks`, which runs `scripts/scan-publication-leaks.sh` and then
+`.agents/hooks/pre-commit-build-check.sh` from the prototype-k checkout. It builds the solution when
+staged `.cs`/`.csproj`/`.props`/`.targets`/`.sln`/`.slnx` files exist, retries once, and exits 2 to
+block the commit.
 
 ## Verification
 
 ```bash
 dotnet build MediaRenamer.sln    # exit 0, every error with file and line
-bash -n .agents/hooks/pre-commit-build-check.sh
 ```
 
 There is no automated test, so evidence for a behaviour change is a dry run against a scratch folder:
